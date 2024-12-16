@@ -39,7 +39,7 @@ const initialPositions = {
 const ChessBoard = () => {
   const renderSquare = (position, isDark, piece) => (
     <div key={position} className={`square ${isDark ? 'dark' : 'light'}`}>
-      {piece && <ChessPiece type={piece.type} color={piece.color} position={position} />}
+     <hi></hi>
     </div>
   );
 
