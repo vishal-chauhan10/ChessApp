@@ -5,11 +5,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: grab;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chess-piece:active {
   cursor: grabbing;
+}
+
+.chess-piece.selected {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.chess-piece.selected img {
+  transform: scale(1.1);
 }
 
 .chess-piece img {
@@ -18,4 +28,18 @@
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  transition: transform 0.3s ease;
+}
+
+.chess-piece.moving {
+  animation: movePiece 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes movePiece {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(var(--targetX), var(--targetY));
+  }
 } 
