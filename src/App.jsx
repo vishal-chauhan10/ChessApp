@@ -1,12 +1,13 @@
 import React from 'react';
 import ChessBoard from './components/ChessBoard';
 import './App.css';
+import { GameProvider } from './store/GameContext';
 
 function App() {
   return (
-    <div className="App">
+    <GameProvider>
       <ChessBoard />
-    </div>
+    </GameProvider>
   );
 }
 
