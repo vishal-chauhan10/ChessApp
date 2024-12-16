@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import '../styles/ChessBoard.css';
 import ChessPiece from './ChessPiece';
-import { isValidMove } from './ChessPieceManager';
+import TurnIndicator from './TurnIndicator';
+import { isValidMove, calculatePossibleMoves } from './ChessPieceManager';
 
 const initialPositions = {
   a1: { type: 'rook', color: 'white' },
@@ -41,58 +42,90 @@ const initialPositions = {
 const ChessBoard = () => {
   const [positions, setPositions] = useState(initialPositions);
   const [currentTurn, setCurrentTurn] = useState('white');
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  const [possibleMoves, setPossibleMoves] = useState([]);
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  const handleSquareClick = (position) => {
+    if (selectedPiece) {
+      if (possibleMoves.includes(position)) {
+        const piece = document.querySelector(
+          `.chess-piece[data-position="${selectedPiece.position}"]`
+        );
+        
+        if (piece) {
+          // Get the source and target squares
+          const fromSquare = document.querySelector(
+            `.square[data-position="${selectedPiece.position}"]`
+          );
+          const toSquare = document.querySelector(
+            `.square[data-position="${position}"]`
+          );
 
-  const handleDrop = (e, targetPosition) => {
-    e.preventDefault();
-    
-    try {
-      const { type, color, sourcePosition } = JSON.parse(e.dataTransfer.getData('piece'));
-      
-      // Don't do anything if dropping on the same square
-      if (sourcePosition === targetPosition) return;
+          if (fromSquare && toSquare) {
+            // Calculate the difference in positions
+            const fromRect = fromSquare.getBoundingClientRect();
+            const toRect = toSquare.getBoundingClientRect();
+            const xDiff = toRect.left - fromRect.left;
+            const yDiff = toRect.top - fromRect.top;
 
-      // Check if it's the correct player's turn
-      if (color !== currentTurn) {
-        console.log("Not your turn!");
-        return;
+            // Set the CSS variables for the animation
+            piece.style.setProperty('--targetX', `${xDiff}px`);
+            piece.style.setProperty('--targetY', `${yDiff}px`);
+            
+            // Add the moving class to trigger animation
+            piece.classList.add('moving');
+
+            // Wait for animation to complete before updating state
+            setTimeout(() => {
+              piece.classList.remove('moving');
+              setPositions(prev => {
+                const newPositions = { ...prev };
+                delete newPositions[selectedPiece.position];
+                newPositions[position] = {
+                  type: selectedPiece.type,
+                  color: selectedPiece.color
+                };
+                return newPositions;
+              });
+              setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+            });
+          }
+        }
       }
-
-      // Check if the move is valid
-      const piece = { type, color };
-      if (!isValidMove(piece, sourcePosition, targetPosition, positions)) {
-        console.log("Invalid move!");
-        return;
+      setSelectedPiece(null);
+      setPossibleMoves([]);
+    } else {
+      // If clicking on a piece
+      const piece = positions[position];
+      if (piece && piece.color === currentTurn) {
+        console.log('Selecting piece:', piece);
+        setSelectedPiece({ ...piece, position });
+        
+        // Calculate possible moves for this piece
+        const moves = calculatePossibleMoves(piece, position, positions);
+        console.log('Calculated moves:', moves);
+        setPossibleMoves(moves);
       }
-
-      setPositions(prevPositions => {
-        const newPositions = { ...prevPositions };
-        delete newPositions[sourcePosition];
-        newPositions[targetPosition] = { type, color };
-        return newPositions;
-      });
-
-      // Switch turns
-      setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
-    } catch (error) {
-      console.error('Error handling piece drop:', error);
     }
   };
 
   const renderSquare = (position, isDark, piece) => (
     <div 
       key={position} 
-      className={`square ${isDark ? 'dark' : 'light'}`}
-      onDragOver={handleDragOver}
-      onDrop={(e) => handleDrop(e, position)}
+      data-position={position}
+      className={`square ${isDark ? 'dark' : 'light'} ${
+        possibleMoves.includes(position) ? 
+          positions[position] ? 'highlighted capture' : 'highlighted' 
+          : ''
+      }`}
+      onClick={() => handleSquareClick(position)}
     >
       {piece && <ChessPiece 
         type={piece.type} 
         color={piece.color} 
-        position={position}  // Pass the position to ChessPiece
+        position={position}
+        isSelected={selectedPiece?.position === position}
+        data-position={position}
       />}
     </div>
   );
@@ -110,7 +143,12 @@ const ChessBoard = () => {
     return board;
   };
 
-  return <div className="chess-board">{renderBoard()}</div>;
+  return (
+    <div className="chess-container">
+      <TurnIndicator currentTurn={currentTurn} />
+      <div className="chess-board">{renderBoard()}</div>
+    </div>
+  );
 };
 
 export default ChessBoard;

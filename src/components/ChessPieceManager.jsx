@@ -145,4 +145,25 @@ export const isValidMove = (piece, from, to, board) => {
     default:
       return false;
   }
+};
+
+export const calculatePossibleMoves = (piece, position, board) => {
+  const possibleMoves = [];
+  
+  // Check all squares on the board
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      const targetPos = `${String.fromCharCode(97 + j)}${8 - i}`;
+      
+      // Skip current position
+      if (targetPos === position) continue;
+      
+      // Check if move is valid
+      if (isValidMove(piece, position, targetPos, board)) {
+        possibleMoves.push(targetPos);
+      }
+    }
+  }
+  
+  return possibleMoves;
 }; 

@@ -1,0 +1,23 @@
+.turn-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.player {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #eee;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.player.active {
+  opacity: 1;
+  background-color: #4CAF50;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+} 
