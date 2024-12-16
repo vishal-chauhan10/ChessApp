@@ -2,6 +2,8 @@
 
 A modern chess application built with React, featuring smooth animations and intuitive gameplay.
 
+![Chess App Screenshot](./src/assets/chess-screenshot.png)
+
 ## Features
 
 ### Game Mechanics
@@ -40,20 +42,6 @@ A modern chess application built with React, featuring smooth animations and int
 1. Click on a piece to see valid moves
 2. Click on highlighted square to move
 3. Game alternates between white and black turns
-
-## Project Structure
-├── components/ # React components
-│ ├── ChessBoard.jsx # Main board component
-│ ├── ChessPiece.jsx # Individual piece component
-│ └── TurnIndicator.jsx # Player turn display
-├── store/
-│ └── GameContext.jsx # Game state management
-├── styles/
-│ ├── ChessBoard.css # Board styling
-│ ├── ChessPiece.css # Piece styling
-│ └── TurnIndicator.css # Turn display styling
-└── assets/
-└── pieces/ # Chess piece images
 
 
 ## Features in Detail
