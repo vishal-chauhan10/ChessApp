@@ -1,28 +1,32 @@
 .chess-board {
     display: grid;
-    grid-template-columns: repeat(8, 1fr); /* Use fractional units */
-    grid-template-rows: repeat(8, 1fr);   /* Use fractional units */
-    width: 80vmin;  /* Use viewport units for width */
-    height: 80vmin; /* Use viewport units for height */
+    grid-template-columns: repeat(8, 1fr);
+    width: 600px;
+    height: 600px;
     border: 2px solid #333;
-    margin: 0 auto; /* Center the board */
-  }
-  
-  .square {
-    width: 100%;  /* Fill the grid cell */
-    height: 100%; /* Fill the grid cell */
-  }
-  
-  .light {
-    background-color: #f0d9b5;
-  }
-  
-  .dark {
-    background-color: #b58863;
-  }
-  
-  .chess-piece {
+}
+
+.square {
+    position: relative;
     width: 100%;
-    height: 100%;
-    cursor: grab;
-  }
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.square.light {
+    background-color: #f0d9b5;
+}
+
+.square.dark {
+    background-color: #b58863;
+}
+
+.square span {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 10px;
+    opacity: 0.5;
+}
