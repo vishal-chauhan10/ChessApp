@@ -1,18 +1,25 @@
 import '../styles/ChessPiece.css';
 
-const ChessPiece = ({ type, color }) => {
-  // This line creates the image filename
-  const pieceId = `${color[0]}${type[0]}`; // Takes first letter of color and type
-  
-  // Examples of how pieceId is created:
-  // For a white king:   color[0] = 'w', type[0] = 'k' => 'wk'
-  // For a black pawn:   color[0] = 'b', type[0] = 'p' => 'bp'
-  // For a white queen:  color[0] = 'w', type[0] = 'q' => 'wq'
-  
+const ChessPiece = ({ type, color, position }) => {
+  const pieceId = `${color[0]}${type[0]}`;
   const pieceImage = `/src/assets/pieces/${pieceId}.png`;
 
+  const handleDragStart = (e) => {
+    // Store both piece info and its current position
+    //dataTransfer.setData() --> This is part of HTML5's Drag and Drop API.
+    e.dataTransfer.setData('piece', JSON.stringify({ 
+      type,      // e.g., 'pawn', 'rook', etc.
+      color,     // 'white' or 'black'
+      sourcePosition: position  // e.g., 'e2', 'a1', etc.
+  }));
+  };
+
   return (
-    <div className="chess-piece">
+    <div 
+      className="chess-piece"
+      draggable="true"
+      onDragStart={handleDragStart}
+    >
       <img src={pieceImage} alt={`${color} ${type}`} />
     </div>
   );

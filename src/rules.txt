@@ -1,0 +1,91 @@
+CHESS PIECE MOVEMENT RULES
+=========================
+
+1. PAWN
+-------
+- Moves forward one square at a time
+- First move: can move two squares forward
+- Captures diagonally forward only
+- Cannot move backward
+- Special moves:
+  * En passant: Capture enemy pawn that just moved two squares
+  * Promotion: Becomes any piece (except king) when reaching opposite end
+- Direction: White moves up, Black moves down
+
+2. ROOK
+-------
+- Moves any number of squares horizontally or vertically
+- Cannot jump over other pieces
+- Captures any enemy piece in its path
+- Special move: Castling with King
+- Movement pattern: ┼
+
+3. KNIGHT
+--------
+- Moves in L-shape (2 squares one way + 1 square perpendicular)
+- Only piece that can jump over others
+- Captures on landing square
+- Movement pattern: L
+
+4. BISHOP
+--------
+- Moves any number of squares diagonally
+- Cannot jump over other pieces
+- Captures any enemy piece in its path
+- Stays on same colored squares throughout game
+- Movement pattern: ✕
+
+5. QUEEN
+-------
+- Combines Rook and Bishop movements
+- Moves any number of squares horizontally, vertically, or diagonally
+- Cannot jump over other pieces
+- Captures any enemy piece in its path
+- Movement pattern: ✛
+
+6. KING
+-------
+- Moves one square in any direction
+- Cannot move into check (threatened square)
+- Special move: Castling
+  * King moves two squares toward Rook
+  * Rook moves to square King crossed
+  * Requirements:
+    > First move for both pieces
+    > No pieces between them
+    > King not in check
+    > King doesn't cross threatened square
+- Must move out of check
+- Game ends if checkmated
+
+GENERAL RULES
+============
+1. Turn Order
+   - White moves first
+   - Players alternate turns
+   - Must move one piece per turn
+
+2. Check Rules
+   - Cannot make moves that put/leave own King in check
+   - Must respond to check by:
+     * Moving King
+     * Blocking check
+     * Capturing threatening piece
+
+3. Game End Conditions
+   - Checkmate (win)
+   - Stalemate (draw)
+   - Insufficient material (draw)
+   - Three-fold repetition (draw)
+   - Fifty-move rule (draw)
+   - Mutual agreement (draw)
+
+IMPLEMENTATION NOTES
+==================
+validateMove function should check:
+1. Basic movement pattern for piece
+2. Path clearance (except Knight)
+3. Capture rules
+4. Special move conditions
+5. Check/Checkmate implications
+6. Turn validity 
