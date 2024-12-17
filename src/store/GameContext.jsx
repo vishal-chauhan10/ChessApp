@@ -43,6 +43,21 @@ const initialState = {
   gameStatus: "active", // active, check, checkmate, stalemate
   check: null, // null, 'white', or 'black'
   checkmate: null, // null, 'white', or 'black'
+  gameStarted: false,
+  scores: {
+    white: 0,
+    black: 0
+  },
+  winner: null,
+  // Point values for pieces
+  pieceValues: {
+    pawn: 1,
+    night: 3,
+    bishop: 3,
+    rook: 5,
+    queen: 9,
+    king: 0
+  }
 };
 
 // 3. We create rules for updating our information (like a manager)
@@ -61,9 +76,26 @@ const gameReducer = (state, action) => {
             from: action.from,
             to: action.to,
             piece: action.piece,
+            captured: action.captured
           },
         ],
       };
+
+      // Update scores if a piece was captured
+      if (action.captured) {
+        const scoringPlayer = action.piece.color;
+        const points = state.pieceValues[action.captured.type];
+        newState.scores = {
+          ...state.scores,
+          [scoringPlayer]: state.scores[scoringPlayer] + points
+        };
+
+        // Check if king was captured
+        if (action.captured.type === 'king') {
+          newState.winner = action.piece.color;
+          newState.gameStatus = 'ended';
+        }
+      }
 
       // Check for check/checkmate after move
       const opponentColor = state.currentTurn === "white" ? "black" : "white";
@@ -83,6 +115,12 @@ const gameReducer = (state, action) => {
       return {
         ...state,
         gameStatus: action.status,
+      };
+
+    case 'START_GAME':
+      return {
+        ...initialState,
+        gameStarted: true
       };
 
     default:
