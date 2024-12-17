@@ -1,10 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import '../styles/GameInfo.css';
-import wp from '../assets/pieces/wp.png';
-import wn from '../assets/pieces/wn.png';
-import wb from '../assets/pieces/wb.png';
-import wr from '../assets/pieces/wr.png';
-import wq from '../assets/pieces/wq.png';
+import { pieceImages } from '../utils/pieceImages';
 
 const GameInfo = ({ players, scores, currentTurn, positions, check, checkmate, winner }) => {
   const [time, setTime] = useState({ minutes: 0, seconds: 0 });
@@ -138,23 +134,23 @@ const GameInfo = ({ players, scores, currentTurn, positions, check, checkmate, w
           <h4>Piece Values</h4>
           <div className="values-grid">
             <div className="value-item">
-              <img src={wp} alt="Pawn" />
+              <img src={pieceImages.white.pawn} alt="Pawn" />
               <span>1</span>
             </div>
             <div className="value-item">
-              <img src={wn} alt="Knight" />
+              <img src={pieceImages.white.night} alt="Knight" />
               <span>3</span>
             </div>
             <div className="value-item">
-              <img src={wb} alt="Bishop" />
+              <img src={pieceImages.white.bishop} alt="Bishop" />
               <span>3</span>
             </div>
             <div className="value-item">
-              <img src={wr} alt="Rook" />
+              <img src={pieceImages.white.rook} alt="Rook" />
               <span>5</span>
             </div>
             <div className="value-item">
-              <img src={wq} alt="Queen" />
+              <img src={pieceImages.white.queen} alt="Queen" />
               <span>9</span>
             </div>
           </div>
