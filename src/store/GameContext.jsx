@@ -42,7 +42,7 @@ const initialState = {
   moveHistory: [],
   gameStatus: "active", // active, check, checkmate, stalemate
   check: null, // null, 'white', or 'black'
-  checkmate: null, // null, 'white', or 'black'
+  checkmate: false, // null, 'white', or 'black'
   gameStarted: false,
   scores: {
     white: 0,
@@ -57,6 +57,10 @@ const initialState = {
     rook: 5,
     queen: 9,
     king: 0
+  },
+  players: {
+    player1: { name: 'Player 1', color: 'white' },
+    player2: { name: 'Player 2', color: 'black' }
   }
 };
 
@@ -90,10 +94,12 @@ const gameReducer = (state, action) => {
           [scoringPlayer]: state.scores[scoringPlayer] + points
         };
 
-        // Check if king was captured
-        if (action.captured.type === 'king') {
+        // If king was captured, end the game immediately
+        if (action.isKingCaptured) {
           newState.winner = action.piece.color;
           newState.gameStatus = 'ended';
+          newState.checkmate = true; // Set checkmate to show game over message
+          return newState;
         }
       }
 
@@ -102,8 +108,9 @@ const gameReducer = (state, action) => {
       if (isInCheck(opponentColor, action.newPositions)) {
         newState.check = opponentColor;
         if (isInCheckmate(opponentColor, action.newPositions)) {
-          newState.checkmate = opponentColor;
-          newState.gameStatus = "checkmate";
+          newState.checkmate = true;
+          newState.winner = state.currentTurn;
+          newState.gameStatus = "ended";
         }
       } else {
         newState.check = null;
@@ -120,7 +127,8 @@ const gameReducer = (state, action) => {
     case 'START_GAME':
       return {
         ...initialState,
-        gameStarted: true
+        gameStarted: true,
+        players: action.players || initialState.players
       };
 
     default:

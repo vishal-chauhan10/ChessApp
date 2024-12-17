@@ -34,39 +34,54 @@ export const isSquareUnderAttack = (square, attackerColor, positions) => {
 };
 
 // Check if a player is in check
-export const isInCheck = (color, positions) => {
-  const kingPosition = findKing(positions, color);
+export const isInCheck = (positions, color) => {
+  // Find the king's position
+  let kingPosition = null;
+  for (const [position, piece] of Object.entries(positions)) {
+    if (piece.type === 'king' && piece.color === color) {
+      kingPosition = position;
+      break;
+    }
+  }
+
   if (!kingPosition) return false;
-  
-  const opponentColor = color === 'white' ? 'black' : 'white';
-  return isSquareUnderAttack(kingPosition, opponentColor, positions);
+
+  // Check if any opponent piece can capture the king
+  for (const [position, piece] of Object.entries(positions)) {
+    if (piece.color !== color) {
+      const moves = calculatePossibleMoves(piece, position, positions);
+      if (moves.includes(kingPosition)) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 // Check if a player is in checkmate
-export const isInCheckmate = (color, positions) => {
-  // First, verify if the player is in check
-  if (!isInCheck(color, positions)) return false;
-  
-  // Try every possible move for every piece
-  for (const [fromSquare, piece] of Object.entries(positions)) {
+export const isInCheckmate = (positions, color) => {
+  if (!isInCheck(positions, color)) return false;
+
+  // Try all possible moves for all pieces of the current color
+  for (const [position, piece] of Object.entries(positions)) {
     if (piece.color === color) {
-      const moves = calculatePossibleMoves(piece, fromSquare, positions);
+      const moves = calculatePossibleMoves(piece, position, positions);
       
-      // Try each move to see if it gets out of check
-      for (const toSquare of moves) {
-        // Create a temporary board position
-        const tempPositions = { ...positions };
-        delete tempPositions[fromSquare];
-        tempPositions[toSquare] = piece;
-        
+      // Try each move
+      for (const move of moves) {
+        // Create a copy of positions with the attempted move
+        const newPositions = { ...positions };
+        delete newPositions[position];
+        newPositions[move] = piece;
+
         // If this move gets us out of check, it's not checkmate
-        if (!isInCheck(color, tempPositions)) {
+        if (!isInCheck(newPositions, color)) {
           return false;
         }
       }
     }
   }
-  
+
   // If no moves get us out of check, it's checkmate
   return true;
 }; 

@@ -4,15 +4,16 @@ import ChessPiece from './ChessPiece';
 import TurnIndicator from './TurnIndicator';
 import { calculatePossibleMoves } from './ChessPieceManager';
 import { useGameState } from '../store/GameContext';
+import GameInfo from './GameInfo';
 
 const ChessBoard = () => {
   const { state, dispatch } = useGameState();
-  const { positions, currentTurn, check, checkmate } = state;
+  const { positions, currentTurn, check, checkmate, winner } = state;
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [possibleMoves, setPossibleMoves] = useState([]);
 
   const handleSquareClick = (position) => {
-    if (checkmate) return; // Prevent moves if game is over
+    if (checkmate || state.gameStatus === 'ended') return; // Prevent moves if game is over
     
     // SCENARIO 1: A piece is already selected
     if (selectedPiece) {
@@ -25,7 +26,6 @@ const ChessBoard = () => {
         
         if (piece) {
           // Find start and end squares
-          // Get the source and target squares
           const fromSquare = document.querySelector(
             `.square[data-position="${selectedPiece.position}"]`
           );
@@ -56,6 +56,9 @@ const ChessBoard = () => {
               color: selectedPiece.color
             };
 
+            // Check if king is captured
+            const isKingCaptured = capturedPiece?.type === 'king';
+
             // Wait for animation to complete before updating state
             setTimeout(() => {
               piece.classList.remove('moving');
@@ -65,7 +68,8 @@ const ChessBoard = () => {
                 from: selectedPiece.position,
                 to: position,
                 piece: selectedPiece,
-                captured: capturedPiece  // This ensures captured piece is passed to reducer
+                captured: capturedPiece,
+                isKingCaptured
               });
             }, 300);
           }
@@ -74,14 +78,17 @@ const ChessBoard = () => {
       setSelectedPiece(null);
       setPossibleMoves([]);
     } else {
-      // If clicking on a piece
-      const piece = positions[position];
-      if (piece && piece.color === currentTurn) {
-        setSelectedPiece({ ...piece, position });
-        
-        // Calculate possible moves for this piece
-        const moves = calculatePossibleMoves(piece, position, positions);
-        setPossibleMoves(moves);
+      // Only allow piece selection if game is still active
+      if (state.gameStatus !== 'ended') {
+        // If clicking on a piece
+        const piece = positions[position];
+        if (piece && piece.color === currentTurn) {
+          setSelectedPiece({ ...piece, position });
+          
+          // Calculate possible moves for this piece
+          const moves = calculatePossibleMoves(piece, position, positions);
+          setPossibleMoves(moves);
+        }
       }
     }
   };
@@ -122,18 +129,31 @@ const ChessBoard = () => {
 
   return (
     <div className="chess-container">
-      <TurnIndicator currentTurn={currentTurn} />
-      {check && !checkmate && (
-        <div className="check-indicator">
-          {check.toUpperCase()} is in check!
+      <GameInfo 
+        players={state.players}
+        scores={state.scores}
+        currentTurn={currentTurn}
+        positions={positions}
+        check={check}
+        checkmate={checkmate}
+        winner={winner}
+      />
+      <div className="game-main">
+        <TurnIndicator currentTurn={currentTurn} />
+        {check && !checkmate && (
+          <div className="check-indicator">
+            {check.toUpperCase()} is in check!
+          </div>
+        )}
+        {checkmate && (
+          <div className="checkmate-indicator">
+            Checkmate! {winner === 'white' ? state.players.player1.name : state.players.player2.name} wins!
+          </div>
+        )}
+        <div className={`chess-board ${checkmate ? 'checkmate' : ''}`}>
+          {renderBoard()}
         </div>
-      )}
-      {checkmate && (
-        <div className="checkmate-indicator">
-          Checkmate! {state.currentTurn === 'white' ? 'Black' : 'White'} wins!
-        </div>
-      )}
-      <div className="chess-board">{renderBoard()}</div>
+      </div>
     </div>
   );
 };
