@@ -49,6 +49,7 @@ const ChessBoard = () => {
 
             // Create new positions object
             const newPositions = { ...positions };
+            const capturedPiece = positions[position];  // Get the captured piece if any
             delete newPositions[selectedPiece.position];
             newPositions[position] = {
               type: selectedPiece.type,
@@ -60,12 +61,13 @@ const ChessBoard = () => {
               piece.classList.remove('moving');
               dispatch({
                 type: 'MOVE_PIECE',
-                newPositions: newPositions,
+                newPositions,
                 from: selectedPiece.position,
                 to: position,
-                piece: selectedPiece
+                piece: selectedPiece,
+                captured: capturedPiece  // This ensures captured piece is passed to reducer
               });
-            });
+            }, 300);
           }
         }
       }
