@@ -63,3 +63,21 @@
   align-items: center;
   padding: 20px;
 }
+
+.check-indicator {
+  color: #f44336;
+  font-weight: bold;
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 4px;
+}
+
+.checkmate-indicator {
+  color: #4CAF50;
+  font-weight: bold;
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 4px;
+}

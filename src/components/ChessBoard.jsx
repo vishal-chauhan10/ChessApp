@@ -2,23 +2,29 @@ import { useState } from 'react';
 import '../styles/ChessBoard.css';
 import ChessPiece from './ChessPiece';
 import TurnIndicator from './TurnIndicator';
-import { isValidMove, calculatePossibleMoves } from './ChessPieceManager';
+import { calculatePossibleMoves } from './ChessPieceManager';
 import { useGameState } from '../store/GameContext';
 
 const ChessBoard = () => {
   const { state, dispatch } = useGameState();
-  const { positions, currentTurn } = state;
+  const { positions, currentTurn, check, checkmate } = state;
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [possibleMoves, setPossibleMoves] = useState([]);
 
   const handleSquareClick = (position) => {
+    if (checkmate) return; // Prevent moves if game is over
+    
+    // SCENARIO 1: A piece is already selected
     if (selectedPiece) {
+      // If clicked square is a valid move
       if (possibleMoves.includes(position)) {
+        // Animation Logic
         const piece = document.querySelector(
           `.chess-piece[data-position="${selectedPiece.position}"]`
         );
         
         if (piece) {
+          // Find start and end squares
           // Get the source and target squares
           const fromSquare = document.querySelector(
             `.square[data-position="${selectedPiece.position}"]`
@@ -115,6 +121,16 @@ const ChessBoard = () => {
   return (
     <div className="chess-container">
       <TurnIndicator currentTurn={currentTurn} />
+      {check && !checkmate && (
+        <div className="check-indicator">
+          {check.toUpperCase()} is in check!
+        </div>
+      )}
+      {checkmate && (
+        <div className="checkmate-indicator">
+          Checkmate! {state.currentTurn === 'white' ? 'Black' : 'White'} wins!
+        </div>
+      )}
       <div className="chess-board">{renderBoard()}</div>
     </div>
   );
