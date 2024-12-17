@@ -1,37 +1,38 @@
-# Chess App
+# React Chess Game
 
-A modern chess application built with React, featuring smooth animations and intuitive gameplay.
+A modern chess game built with React, featuring real-time win probability calculation, piece value display, and a sleek user interface.
 
-![Chess App Screenshot](./src/assets/chess-screenshot.png)
+🎮 [Play Live Demo](https://project-chessapp.netlify.app/)
 
 ## Features
 
-### Game Mechanics
-- Complete chess piece movement validation
-- Turn-based gameplay
-- Legal move highlighting
-- Piece capture system
+- 🎮 Full chess gameplay with all standard rules
+- 📊 Real-time win probability calculation
+- ⏱️ Game timer
+- 💫 Smooth piece movement animations
+- 🎯 Move highlighting and capture indicators
+- 📱 Fully responsive design
+- 🎨 Modern UI with glassmorphism effects
+- 👑 Piece value reference guide
+- ⚡ Check and checkmate detection
 
-### User Interface
-- Interactive chessboard
-- Visual move indicators
-- Active player display
-- Smooth piece animations
+## Tech Stack
 
-## Technical Stack
 - React 18
-- CSS3 Animations
-- React Context for state management
-- Vite for build tooling
+- Vite
+- CSS3 with modern features
+- Context API for state management
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v14 or higher)
 - npm or yarn
 
 ### Installation
-- Clone the repository
+
+1. Clone the repository
 - git clone [your-repo-url]
 - Install dependencies
 - npm install
